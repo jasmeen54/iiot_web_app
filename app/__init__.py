@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route('/')
 def list_blobs():
     # Load configuration
-    blob_connection_string = config.get('BLOB_CONNECTION_STRING')
+    blob_connection_string = ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
     container_name = 'dataiiot'
 
     
