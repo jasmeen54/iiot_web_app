@@ -18,7 +18,7 @@ def list_blobs():
     #config = load_config()
     #blob_connection_string = config.get('BLOB_CONNECTION_STRING')
     #container_name = config.get('CONTAINER_NAME')
-    blob_connection_string = ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
+    blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
     container_name = "dataiiot"
 
     # Retrieve blob data
