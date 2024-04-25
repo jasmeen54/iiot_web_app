@@ -5,20 +5,12 @@ import json
 
 app = Flask(__name__)
 
-# Load configuration from config.json
-def load_config():
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-    return config
-
-
 # Define route to list blob data
 @app.route('/')
 def list_blobs():
     # Load configuration
-    config = load_config()
     blob_connection_string = config.get('BLOB_CONNECTION_STRING')
-    container_name = config.get('CONTAINER_NAME')
+    container_name = 'dataiiot'
 
     
     # Retrieve blob data
