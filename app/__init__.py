@@ -6,12 +6,6 @@ import os
 
 app = Flask(__name__)
 
-# Load configuration from config.json
-#def load_config():
-    #with open('config.json', 'r') as f:
-        #config = json.load(f)
-    #return config
-
 # Define route to list blob data
 @app.route('/')
 def list_blobs():
