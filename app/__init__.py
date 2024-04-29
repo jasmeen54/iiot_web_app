@@ -9,8 +9,10 @@ app = Flask(__name__)
 # Define route to list blob data
 @app.route('/')
 def list_blobs():
-    blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
-    container_name = os.environ.get('AZURE_CONTAINER_NAME')
+     if 'AZURE_BLOB_STORAGE_CONNECTION_STRING' in os.environ: 
+        blob_connection_string = os.environ.get['AZURE_BLOB_STORAGE_CONNECTION_STRING'] 
+    if 'AZURE_CONTAINER_NAME' in os.environ: 
+        container_name = os.environ.get['AZURE_CONTAINER_NAME']
 
     # Retrieve blob data
     blob_data_list = list_blob_data(blob_connection_string, container_name)
