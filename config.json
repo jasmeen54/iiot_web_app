@@ -1,0 +1,4 @@
+{
+    "BLOB_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=nodedemos;AccountKey=rZ6BWgBE2yV/GNl0LBxfQppYTcYKW0G3THvl+Osdmg2679RSerFBUAWjpEu99lyIQTSkQuMTEbvX+AStTk6zFw==;EndpointSuffix=core.windows.net",
+    "CONTAINER_NAME": "dataiiot"
+}
