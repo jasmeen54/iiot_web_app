@@ -10,7 +10,7 @@ app = Flask(__name__)
 def list_blobs():
     # Load configuration
     config = load_config()
-    blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
+    blob_connection_string = os.environ.get('credentials')
     container_name = "dataiiot"
     
     # List blobs in the container
