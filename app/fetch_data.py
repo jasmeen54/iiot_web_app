@@ -2,8 +2,6 @@ from azure.storage.blob import BlobServiceClient
 import os
 import json
 
-from azure.storage.blob import BlobServiceClient
-
 def list_blobs_in_container(blob_connection_string, container_name):
     try:
         # Connect to the Blob Service
