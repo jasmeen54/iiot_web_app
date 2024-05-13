@@ -14,8 +14,7 @@ def list_blobs():
         
     # List blobs in the container
     blobs = list_blobs_in_container(blob_connection_string, container_name)
-    return blobs
-    
+
     if blobs:
         return render_template("index.html", blobs=blobs)
     else:
