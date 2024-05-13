@@ -15,6 +15,9 @@ def list_blobs():
     # List blobs in the container
     blobs = list_blobs_in_container(blob_connection_string, container_name)
 
+    # Print blobs to the console for debugging
+    print("Blobs retrieved from Azure Blob Storage:", blobs)
+
     if blobs:
         return render_template("index.html", blobs=blobs)
     else:
