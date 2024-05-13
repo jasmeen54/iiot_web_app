@@ -11,7 +11,7 @@ def list_blobs():
     try:
         # Load configuration
         blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
-        container_name = 'dataiiot'
+        container_name = os.environ.get('AZURE_CONTAINER_NAME')
         
         # List blobs in the container
         blobs = list_blobs_in_container(blob_connection_string, container_name)
