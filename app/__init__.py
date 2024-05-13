@@ -11,6 +11,7 @@ def list_blobs():
     # Load configuration
     blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
     container_name = os.environ.get('AZURE_CONTAINER_NAME')
+    print("Container name is:", container_name)
         
     # List blobs in the container
     blobs = list_blobs_in_container(blob_connection_string, container_name)
