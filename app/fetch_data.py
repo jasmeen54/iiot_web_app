@@ -4,10 +4,10 @@ import json
 
 from azure.storage.blob import BlobServiceClient
 
-def list_blobs_in_container(connection_string, container_name):
+def list_blobs_in_container(blob_connection_string, container_name):
     try:
         # Connect to the Blob Service
-        blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+        blob_service_client = BlobServiceClient.from_connection_string(blob_connection_string)
 
         # Get a reference to the container
         container_client = blob_service_client.get_container_client(container_name)
