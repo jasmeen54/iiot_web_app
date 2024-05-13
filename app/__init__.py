@@ -10,7 +10,6 @@ app = Flask(__name__)
 def list_blobs():
     try:
         # Load configuration
-        config = load_config()
         blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
         container_name = "dataiiot"
         
