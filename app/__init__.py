@@ -1,25 +1,23 @@
-from flask import Flask, render_template
-from app.fetch_data import list_blobs_in_container
-import json
+from flask import Flask, render_template, send_from_directory
+from .fetch_data import list_blobs_in_container
+import os
 
 app = Flask(__name__)
 
+# Define route to list blobs
 @app.route('/')
 def list_blobs():
     # Load configuration
     blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
     container_name = 'dataiiot'
 
-    # Print container name and connection string for debugging
-    print("Connection string is:", blob_connection_string)
-    print("Container name is:", container_name)
+    # Log the environment variables for debugging
+    print("Connection string:", blob_connection_string)
+    print("Container name:", container_name)
     
-    # Check if environment variables are None
-    if not blob_connection_string:
-        return "Error: AZURE_BLOB_STORAGE_CONNECTION_STRING environment variable not set."
-    if not container_name:
-        return "Error: AZURE_CONTAINER_NAME environment variable not set."
-
+    # Print container name
+    print("Container name is:", container_name)
+        
     # List blobs in the container
     blobs = list_blobs_in_container(blob_connection_string, container_name)
 
