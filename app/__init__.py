@@ -1,3 +1,10 @@
+from app import routes
+from flask import Flask, render_template
+from app.fetch_data import list_blobs_in_container
+import json
+
+app = Flask(__name__)
+
 @app.route('/')
 def list_blobs():
     # Load configuration
