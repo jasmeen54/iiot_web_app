@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+# app.py
+from flask import Flask, render_template, send_from_directory
 from app.fetch_data import list_blobs_in_container
-import json
 import os
 
 app = Flask(__name__)
@@ -25,6 +25,11 @@ def list_blobs():
         return render_template("index.html", blobs=blobs)
     else:
         return "No blobs found in the container."
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(debug=True)
