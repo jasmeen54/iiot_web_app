@@ -10,31 +10,20 @@ def list_and_fetch_blobs_in_container(connection_string, container_name):
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         container_client = blob_service_client.get_container_client(container_name)
         
-        blobs_data = {}
-        unique_prefixes = set()
+        blobs_data = []
 
-        # List all blobs and collect unique prefixes
+        # List all blobs and collect JSON data
         for blob in container_client.list_blobs():
-            if '/' in blob.name:
-                prefix = blob.name.split('/')[0] + '/'
-                unique_prefixes.add(prefix)
-        
-        # For each unique prefix, fetch JSON data from blobs
-        for prefix in unique_prefixes:
-            blobs_data[prefix] = {}
-            for blob in container_client.list_blobs(name_starts_with=prefix):
-                if blob.name.endswith('.json'):
-                    blob_client = container_client.get_blob_client(blob)
-                    blob_content = blob_client.download_blob().readall()
-                    blobs_data[prefix][blob.name] = json.loads(blob_content)
+            if blob.name.endswith('.json'):
+                blob_client = container_client.get_blob_client(blob)
+                blob_content = blob_client.download_blob().readall()
+                blobs_data.append(blob_content)
         
         return blobs_data
     
     except Exception as e:
         print(f"Error listing and fetching blob data: {e}")
         return None
-
-
 
 
 
