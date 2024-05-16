@@ -38,7 +38,7 @@ thread.start()
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template("index.html", sensor_data_json=sensor_data_json)
 
 @app.route('/data')
 def get_data():
