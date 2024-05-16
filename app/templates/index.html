@@ -23,7 +23,9 @@
                         const timestamps = sensorValues.map(d => d.timestamp);
                         const values = sensorValues.map(d => d.value);
 
-                        labels.push(...timestamps);
+                        if (labels.length === 0) {
+                            labels.push(...timestamps);
+                        }
 
                         datasets.push({
                             label: sensorName,
