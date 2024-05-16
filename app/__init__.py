@@ -25,13 +25,18 @@ def list_blobs():
     # List and fetch blobs in the container
     blobs_data = list_and_fetch_blobs_in_container(blob_connection_string, container_name)
     
-    # Process blobs data
-    processed_data = process_blob_data(blobs_data)
+    # Process blob data and organize it into sensor_data dictionary
+    sensor_data = process_blob_data(blob_data_list)
 
-    if processed_data:
-        return render_template("index.html", data=processed_data)
-    else:
-        return "No blobs found in the container."
+    # Check if sensor_data is None
+    if sensor_data is None:
+        return "Error occurred while processing blob data."
+
+    # Convert sensor_data to JSON string
+    sensor_data_json = json.dumps(sensor_data)
+
+    # Render the template with sensor data
+    return render_template("index.html", sensor_data_json=sensor_data_json)
 
 @app.route('/favicon.ico')
 def favicon():
