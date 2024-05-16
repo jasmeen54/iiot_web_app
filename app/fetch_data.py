@@ -10,16 +10,16 @@ def list_and_fetch_blobs_in_container(connection_string, container_name):
         blob_service_client = BlobServiceClient.from_connection_string(connection_string)
         container_client = blob_service_client.get_container_client(container_name)
         
-        blobs_data = []
-
-        # List all blobs and collect JSON data
+        # List blobs in the container
+        blob_data_list = []
         for blob in container_client.list_blobs():
             if blob.name.endswith('.json'):
-                blob_client = container_client.get_blob_client(blob)
-                blob_content = blob_client.download_blob().readall()
-                blobs_data.append(blob_content)
+                blob_client = container_client.get_blob_client(blob.name)
+                blob_data = blob_client.download_blob()
+                data = blob_data.readall().decode('utf-8')
+                blob_data_list.append(data)
         
-        return blobs_data
+        return blob_data_list
     
     except Exception as e:
         print(f"Error listing and fetching blob data: {e}")
