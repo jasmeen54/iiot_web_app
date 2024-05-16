@@ -28,8 +28,8 @@ def update_data():
             sensor_data.clear()  # Clear existing data
             sensor_data.update(processed_data)  # Update with new data
 
-        # Wait for 10 minutes before next update
-        time.sleep(600)
+        # Wait for 5 minutes before next update
+        time.sleep(300)
 
 # Start the background data update thread
 thread = threading.Thread(target=update_data)
@@ -45,7 +45,9 @@ def get_data():
     global sensor_data
     # Acquire the lock before accessing sensor_data
     with sensor_data_lock:
-        return jsonify(sensor_data)
+        sensor_data_json = json.dumps(sensor_data)
+        # Perform additional processing on sensor_data_json if needed
+        return sensor_data_json
 
 @app.route('/favicon.ico')
 def favicon():
