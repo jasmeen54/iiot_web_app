@@ -9,7 +9,7 @@ import time
 app = Flask(__name__)
 
 # Initialize sensor_data as an empty dictionary
-sensor_data = {}
+# sensor_data = {}
 sensor_data_lock = threading.Lock()  # Create a lock for synchronization
 
 def update_data():
