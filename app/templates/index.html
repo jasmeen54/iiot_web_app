@@ -3,28 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blobs in Container</title>
+    <title>Sensor Data</title>
 </head>
 <body>
-    <h1>Blobs Found in the Container</h1>
-    {% if blobs %}
-        <ul>
-            {% for folder, files in blobs.items() %}
-                <li><strong>{{ folder }}</strong>
-                    <ul>
-                        {% for file in files %}
-                            <li>{{ file }}</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No blobs found.</p>
-    {% endif %}
+    <h1>Sensor Data</h1>
+    {% for sensor_name, data_list in sensor_data.items() %}
+        <h2>{{ sensor_name }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Value</th>
+                    <th>Timestamp</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in data_list %}
+                    <tr>
+                        <td>{{ data.value }}</td>
+                        <td>{{ data.timestamp }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
 </body>
 </html>
-
 
 
 
