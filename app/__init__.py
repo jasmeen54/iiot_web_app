@@ -36,6 +36,7 @@ def index():
 
 @app.route('/data')
 def get_data():
+    global sensor_data
     return jsonify(sensor_data)
 
 @app.route('/favicon.ico')
