@@ -11,6 +11,75 @@
         let sensorChart;
         const ctx = document.getElementById('sensorChart').getContext('2d');
 
+        // Get sensor data from Flask template
+        var sensorDataString = '{{ sensor_data_json|safe }}';
+
+        // Parse the JSON string to an object
+        var sensorData = JSON.parse(sensorDataString);
+
+        // Check if sensorData is an object
+        if (typeof sensorData === 'object' && sensorData !== null) {
+            // Iterate over each sensor device
+            Object.keys(sensorData).forEach(function(sensorName) {
+                var sensor = sensorData[sensorName];
+                var labels = [];
+                var values = [];
+                var max = -Infinity;
+                var min = Infinity;
+
+                // Prepare data for the chart and calculate max and min values
+                sensor.data.forEach(function(dataItem) {
+                    labels.push(dataItem.timestamp); // X-axis
+
+                    // Extract the numerical part of the value
+                    var numericalValue = parseFloat(dataItem.value);
+                    values.push(numericalValue); // Y-axis
+
+                    // Update max and min values
+                    if (numericalValue > max) {
+                        max = numericalValue;
+                    }
+                    if (numericalValue < min) {
+                        min = numericalValue;
+                    }
+                });
+
+                // Create a container for each chart
+                var container = document.createElement('div');
+                container.setAttribute('class', 'chart-container');
+                document.getElementById('chartContainer').appendChild(container);
+
+                // Create canvas for the chart
+                var canvasId = 'chart_' + sensorName.replace(/\s+/g, '_');
+                var canvasElement = document.createElement('canvas');
+                canvasElement.setAttribute('id', canvasId);
+                container.appendChild(canvasElement);
+
+                // Create the chart
+                var ctx = document.getElementById(canvasId).getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: sensorName,
+                            data: values,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
         function fetchDataAndUpdateChart() {
             fetch('/data')
                 .then(response => response.json())
@@ -77,6 +146,7 @@
     </script>
 </body>
 </html>
+
 
 
 
