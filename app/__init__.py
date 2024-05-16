@@ -1,6 +1,7 @@
 from flask import Flask, render_template, send_from_directory
 from app.fetch_data import list_and_fetch_blobs_in_container
 from app.process_blob_data import process_blob_data
+import json
 import os
 
 app = Flask(__name__)
@@ -23,10 +24,10 @@ def list_blobs():
         return "Error: AZURE_CONTAINER_NAME environment variable not set."
 
     # List and fetch blobs in the container
-    blobs_data = list_and_fetch_blobs_in_container(blob_connection_string, container_name)
+    blob_data_list = list_and_fetch_blobs_in_container(blob_connection_string, container_name)
     
     # Process blob data and organize it into sensor_data dictionary
-    sensor_data = process_blob_data(blobs_data)
+    sensor_data = process_blob_data(blob_data_list)
 
     # Check if sensor_data is None
     if sensor_data is None:
