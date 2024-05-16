@@ -13,21 +13,36 @@ def process_blob_data(blob_data_list):
 
             # Initialize data list for the sensor if not exists
             if sensor_name not in sensor_data:
-                sensor_data[sensor_name] = []
+                sensor_data[sensor_name] = {
+                    "data": [],
+                    "average_value": 0  # Initialize average value
+                }
 
             # Extract value and timestamp from the JSON data
             value = json_data.get('value')
             timestamp = json_data.get('timestamp')
 
+            # Check if the value contains a percentage sign
+            if '%' in value:
+                # For percentage values, remove the percentage sign and convert to float
+                numerical_value = float(value.replace('%', ''))
+            else:
+                # For other values, extract the numerical part and convert to float
+                numerical_value = float(value.split()[0])
+
             # Append value and timestamp to sensor data list
-            sensor_data[sensor_name].append({
-                "value": value,
+            sensor_data[sensor_name]["data"].append({
+                "value": numerical_value,
                 "timestamp": timestamp
             })
 
-        # Sort sensor data by timestamp
-        for sensor_name, data_list in sensor_data.items():
-            sensor_data[sensor_name] = sorted(data_list, key=lambda x: x["timestamp"])
+        # Calculate average value for each sensor
+        for sensor_name, data in sensor_data.items():
+            data_list = data["data"]
+            if data_list:
+                values = [d["value"] for d in data_list]
+                average_value = sum(values) / len(values)
+                sensor_data[sensor_name]["average_value"] = average_value
 
         return sensor_data
 
