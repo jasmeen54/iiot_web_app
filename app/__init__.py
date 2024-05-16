@@ -8,7 +8,9 @@ import time
 
 app = Flask(__name__)
 
+# Initialize sensor_data as an empty dictionary
 sensor_data = {}
+sensor_data_lock = threading.Lock()  # Create a lock for synchronization
 
 def update_data():
     while True:
@@ -19,8 +21,12 @@ def update_data():
         blobs_data = list_and_fetch_blobs_in_container(blob_connection_string, container_name)
         
         # Process blob data and organize it into sensor_data dictionary
-        global sensor_data
-        sensor_data = process_blob_data(blobs_data)
+        processed_data = process_blob_data(blobs_data)
+
+        # Acquire the lock before updating sensor_data
+        with sensor_data_lock:
+            sensor_data.clear()  # Clear existing data
+            sensor_data.update(processed_data)  # Update with new data
 
         # Wait for 10 minutes before next update
         time.sleep(600)
@@ -37,12 +43,13 @@ def index():
 @app.route('/data')
 def get_data():
     global sensor_data
-    return jsonify(sensor_data)
+    # Acquire the lock before accessing sensor_data
+    with sensor_data_lock:
+        return jsonify(sensor_data)
 
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(debug=True)
