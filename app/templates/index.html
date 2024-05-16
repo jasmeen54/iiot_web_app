@@ -12,6 +12,11 @@
             fetch('/data')
                 .then(response => response.json())
                 .then(data => {
+                    if (!data) {
+                        console.error('No data received');
+                        return;
+                    }
+
                     console.log("Fetched data:", data);  // Log fetched data
 
                     const chartsContainer = document.getElementById('charts-container');
@@ -89,6 +94,7 @@
     </script>
 </body>
 </html>
+
 
 
 
