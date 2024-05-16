@@ -6,78 +6,76 @@
 </head>
 <body>
     <h1>Sensor Data</h1>
-    <div id="chartContainer"></div>
-
+    <canvas id="sensorChart" width="400" height="200"></canvas>
     <script>
-        function fetchDataAndUpdateCharts() {
+        let sensorChart;
+        const ctx = document.getElementById('sensorChart').getContext('2d');
+
+        function fetchDataAndUpdateChart() {
             fetch('/data')
                 .then(response => response.json())
-                .then(sensorData => {
-                    if (typeof sensorData === 'object' && sensorData !== null) {
-                        // Iterate over each sensor device
-                        Object.keys(sensorData).forEach(function(sensorName) {
-                            var sensor = sensorData[sensorName];
-                            var labels = [];
-                            var values = [];
+                .then(data => {
+                    const labels = [];
+                    const datasets = [];
 
-                            // Prepare data for the chart
-                            sensor.data.forEach(function(dataItem) {
-                                labels.push(dataItem.timestamp); // X-axis
+                    Object.keys(data).forEach(sensorName => {
+                        const sensorValues = data[sensorName];
+                        const timestamps = sensorValues.map(d => d.timestamp);
+                        const values = sensorValues.map(d => d.value);
 
-                                // Extract the numerical part of the value
-                                var numericalValue = parseFloat(dataItem.value);
-                                values.push(numericalValue); // Y-axis
-                            });
+                        labels.push(...timestamps);
 
-                            // Create or update the chart
-                            var canvasId = 'chart_' + sensorName.replace(/\s+/g, '_');
-                            var ctx = document.getElementById(canvasId);
-                            if (!ctx) {
-                                // Create a container for the chart
-                                var container = document.createElement('div');
-                                container.setAttribute('class', 'chart-container');
-                                document.getElementById('chartContainer').appendChild(container);
+                        datasets.push({
+                            label: sensorName,
+                            data: values,
+                            fill: false,
+                            borderColor: getRandomColor(),
+                        });
+                    });
 
-                                // Create canvas for the chart
-                                var canvasElement = document.createElement('canvas');
-                                canvasElement.setAttribute('id', canvasId);
-                                container.appendChild(canvasElement);
-                                ctx = canvasElement.getContext('2d');
-                            }
-
-                            // Update the chart data
-                            new Chart(ctx, {
-                                type: 'line',
-                                data: {
-                                    labels: labels,
-                                    datasets: [{
-                                        label: sensorName,
-                                        data: values,
-                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                        borderColor: 'rgba(255, 99, 132, 1)',
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true
+                    if (!sensorChart) {
+                        sensorChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: datasets
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        type: 'time',
+                                        time: {
+                                            unit: 'minute'
                                         }
                                     }
                                 }
-                            });
+                            }
                         });
+                    } else {
+                        sensorChart.data.labels = labels;
+                        sensorChart.data.datasets = datasets;
+                        sensorChart.update();
                     }
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-        // Fetch data and update charts every 5 minutes
-        fetchDataAndUpdateCharts();
-        setInterval(fetchDataAndUpdateCharts, 300000); // 5 minutes in milliseconds
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Fetch data and update chart every 10 minutes
+        fetchDataAndUpdateChart();
+        setInterval(fetchDataAndUpdateChart, 600000);
     </script>
 </body>
 </html>
+
 
 
 
