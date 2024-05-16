@@ -3,25 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blobs Data</title>
+    <title>Sensor Data</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Blobs Data in the Container</h1>
-    {% if data %}
-        {% for sensor_name, readings in data.items() %}
-            <h2>Sensor: {{ sensor_name }}</h2>
-            <ul>
-                {% for reading in readings %}
-                    <li>
-                        <strong>Timestamp:</strong> {{ reading.timestamp }}<br>
-                        <strong>Value:</strong> {{ reading.value }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endfor %}
-    {% else %}
-        <p>No data found.</p>
-    {% endif %}
+    <h1>Sensor Data</h1>
+
+    <!-- Add a container for the charts -->
+    <div id="chartContainer"></div>
+
+    <script>
+        // Get sensor data from Flask template
+        var sensorDataString = '{{ sensor_data_json|safe }}';
+        
+        // Parse the JSON string to an object
+        var sensorData = JSON.parse(sensorDataString);
+
+        // Check if sensorData is an object
+        if (typeof sensorData === 'object' && sensorData !== null) {
+            // Iterate over each sensor device
+            Object.keys(sensorData).forEach(function(sensorName) {
+                var sensor = sensorData[sensorName];
+                var labels = [];
+                var values = [];
+                var max = -Infinity;
+                var min = Infinity;
+
+                // Prepare data for the chart and calculate max and min values
+                sensor.data.forEach(function(dataItem) {
+                    labels.push(dataItem.timestamp); // X-axis
+
+                    // Extract the numerical part of the value
+                    var numericalValue = parseFloat(dataItem.value);
+                    values.push(numericalValue); // Y-axis
+
+                    // Update max and min values
+                    if (numericalValue > max) {
+                        max = numericalValue;
+                    }
+                    if (numericalValue < min) {
+                        min = numericalValue;
+                    }
+                });
+
+                // Create a container for each chart
+                var container = document.createElement('div');
+                container.setAttribute('class', 'chart-container');
+                document.getElementById('chartContainer').appendChild(container);
+
+                // Create canvas for the chart
+                var canvasId = 'chart_' + sensorName.replace(/\s+/g, '_');
+                var canvasElement = document.createElement('canvas');
+                canvasElement.setAttribute('id', canvasId);
+                container.appendChild(canvasElement);
+
+                // Create the chart
+                var ctx = document.getElementById(canvasId).getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: sensorName,
+                            data: values,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // Display average, max, and min values
+                var averageValueElement = document.createElement('p');
+                averageValueElement.innerText = 'Average Value: ' + sensor.average_value.toFixed(2);
+                container.appendChild(averageValueElement);
+
+                var maxValueElement = document.createElement('p');
+                maxValueElement.innerText = 'Maximum Value: ' + max.toFixed(2);
+                container.appendChild(maxValueElement);
+
+                var minValueElement = document.createElement('p');
+                minValueElement.innerText = 'Minimum Value: ' + min.toFixed(2);
+                container.appendChild(minValueElement);
+            });
+        }
+    </script>
 </body>
 </html>
 
