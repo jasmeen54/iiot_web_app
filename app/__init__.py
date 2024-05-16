@@ -9,7 +9,7 @@ import time
 app = Flask(__name__)
 
 # Initialize sensor_data as an empty dictionary
-# sensor_data = {}
+sensor_data = {}
 sensor_data_lock = threading.Lock()  # Create a lock for synchronization
 
 def update_data():
@@ -46,7 +46,6 @@ def get_data():
     # Acquire the lock before accessing sensor_data
     with sensor_data_lock:
         sensor_data_json = json.dumps(sensor_data)
-        # Perform additional processing on sensor_data_json if needed
         return sensor_data_json
 
 @app.route('/favicon.ico')
@@ -55,6 +54,7 @@ def favicon():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
