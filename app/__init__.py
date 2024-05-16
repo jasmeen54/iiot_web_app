@@ -1,6 +1,7 @@
 from flask import Flask, render_template, send_from_directory
-from app.fetch_data import list_blobs_in_container
-import os
+from app.fetch_data import list_blob_data
+from app.process_blob_data import process_blob_data
+import json
 
 app = Flask(__name__)
 
@@ -21,16 +22,16 @@ def list_blobs():
     if not container_name:
         return "Error: AZURE_CONTAINER_NAME environment variable not set."
 
-    # List blobs in the container
-    blobs = list_blobs_in_container(blob_connection_string, container_name)
+    # Retrieve blob data
+    blob_data_list = list_blob_data(blob_connection_string, container_name)
 
-    # Print blobs to the console for debugging
-    print("Blobs retrieved from Azure Blob Storage:", blobs)
-
-    if blobs:
-        return render_template("index.html", blobs=blobs)
+    # Process blob data and organize it into sensor_data dictionary
+    sensor_data = process_blob_data(blob_data_list)
+    
+    if sensor_data:
+        return render_template("index.html", sensor_data=sensor_data)
     else:
-        return "No blobs found in the container."
+        return "Error occurred while listing blob data."
 
 @app.route('/favicon.ico')
 def favicon():
