@@ -43,10 +43,11 @@ def process_blob_data(blob_data_list):
             # Sort sensor data by timestamp
             sensor_data[sensor_name]["data"] = sorted(data_list, key=lambda x: x["timestamp"])
 
+        print("Processed sensor data:", sensor_data)  # Add print statement to verify processed data
+
         return sensor_data
 
     except Exception as e:
         print(f"Error processing blob data: {e}")
         return None
-
 
