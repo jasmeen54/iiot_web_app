@@ -17,20 +17,22 @@ def update_data():
         blob_connection_string = os.environ.get('AZURE_BLOB_STORAGE_CONNECTION_STRING')
         container_name = os.environ.get('AZURE_CONTAINER_NAME')
 
+        print("Starting data update cycle...")
+        
         # List and fetch blobs in the container
         blobs_data = list_and_fetch_blobs_in_container(blob_connection_string, container_name)
+        print("Fetched blobs data:", blobs_data)
         
         # Process blob data and organize it into sensor_data dictionary
-        processed_data_array = process_blob_data(blobs_data)
-
+        processed_data = process_blob_data(blobs_data)
+        print("Processed data:", processed_data)
+        
         # Acquire the lock before updating sensor_data
         with sensor_data_lock:
-            # Clear existing data
-            sensor_data.clear()
-            # Aggregate processed data into sensor_data dictionary
-            for processed_data in processed_data_array:
-                sensor_name = processed_data['sensor']
-                sensor_data[sensor_name] = processed_data
+            sensor_data.clear()  # Clear existing data
+            sensor_data.update(processed_data)  # Update with new data
+
+        print("Updated sensor data:", sensor_data)
 
         # Wait for 5 minutes before next update
         time.sleep(300)
