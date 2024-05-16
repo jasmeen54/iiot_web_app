@@ -26,7 +26,7 @@ def list_blobs():
     blobs_data = list_and_fetch_blobs_in_container(blob_connection_string, container_name)
     
     # Process blob data and organize it into sensor_data dictionary
-    sensor_data = process_blob_data(blob_data_list)
+    sensor_data = process_blob_data(blobs_data)
 
     # Check if sensor_data is None
     if sensor_data is None:
