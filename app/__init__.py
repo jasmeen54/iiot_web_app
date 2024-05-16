@@ -28,9 +28,6 @@ def list_blobs():
     # Process blobs data
     processed_data = process_blob_data(blobs_data)
 
-    # Print processed data to the console for debugging
-    print("Processed Data:", processed_data)
-
     if processed_data:
         return render_template("index.html", data=processed_data)
     else:
