@@ -1,29 +1,30 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Blob List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blobs in Container</title>
 </head>
 <body>
-    <h1>Blobs in Azure Blob Storage</h1>
+    <h1>Blobs Found in the Container</h1>
     {% if blobs %}
         <ul>
-        {% for folder, blob_list in blobs.items() %}
-            <li><strong>{{ folder }}</strong>
-                <ul>
-                {% for blob in blob_list %}
-                    <li>{{ blob }}</li>
-                {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
+            {% for folder, files in blobs.items() %}
+                <li><strong>{{ folder }}</strong>
+                    <ul>
+                        {% for file in files %}
+                            <li>{{ file }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
         </ul>
     {% else %}
-        <p>No blobs found in the container.</p>
+        <p>No blobs found.</p>
     {% endif %}
 </body>
 </html>
+
 
 
 
