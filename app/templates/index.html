@@ -11,8 +11,11 @@
         let sensorChart;
         const ctx = document.getElementById('sensorChart').getContext('2d');
 
+        // Get sensor data from Flask template
+        var sensorDataString = '{{ sensor_data_json|safe }}';
+
         // Parse the JSON string to an object
-        var sensorData = JSON.parse('{{ sensor_data_json|tojson|safe }}');
+        var sensorData = JSON.parse(sensorDataString);
 
         // Check if sensorData is an object
         if (typeof sensorData === 'object' && sensorData !== null) {
