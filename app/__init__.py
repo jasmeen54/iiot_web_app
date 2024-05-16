@@ -22,6 +22,9 @@ def update_data():
         global sensor_data
         sensor_data = process_blob_data(blobs_data)
 
+        # Print sensor_data for debugging
+        print("Sensor Data:", sensor_data)
+
         # Wait for 10 minutes before next update
         time.sleep(600)
 
