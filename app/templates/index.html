@@ -6,39 +6,46 @@
 </head>
 <body>
     <h1>Sensor Data</h1>
-    <canvas id="sensorChart" width="400" height="200"></canvas>
+    <div id="charts-container"></div>
     <script>
-        let sensorChart;
-        const ctx = document.getElementById('sensorChart').getContext('2d');
-
-        function fetchDataAndUpdateChart() {
+        function fetchDataAndUpdateCharts() {
             fetch('/data')
                 .then(response => response.json())
                 .then(data => {
-                    const labels = [];
-                    const datasets = [];
+                    console.log("Fetched data:", data);  // Log fetched data
+
+                    const chartsContainer = document.getElementById('charts-container');
+                    chartsContainer.innerHTML = '';  // Clear existing content
 
                     Object.keys(data).forEach(sensorName => {
-                        const sensorValues = data[sensorName];
+                        const sensorInfo = data[sensorName];
+                        const sensorValues = sensorInfo.data;
+
+                        if (!Array.isArray(sensorValues)) {
+                            console.error(`Unexpected data format for sensor ${sensorName}:`, sensorValues);
+                            return;
+                        }
+
                         const timestamps = sensorValues.map(d => d.timestamp);
                         const values = sensorValues.map(d => d.value);
 
-                        labels.push(...timestamps);
+                        // Create a new canvas element for each sensor
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 400;
+                        canvas.height = 200;
+                        chartsContainer.appendChild(canvas);
 
-                        datasets.push({
-                            label: sensorName,
-                            data: values,
-                            fill: false,
-                            borderColor: getRandomColor(),
-                        });
-                    });
-
-                    if (!sensorChart) {
-                        sensorChart = new Chart(ctx, {
+                        const ctx = canvas.getContext('2d');
+                        new Chart(ctx, {
                             type: 'line',
                             data: {
-                                labels: labels,
-                                datasets: datasets
+                                labels: timestamps,
+                                datasets: [{
+                                    label: sensorName,
+                                    data: values,
+                                    fill: false,
+                                    borderColor: getRandomColor(),
+                                }]
                             },
                             options: {
                                 scales: {
@@ -51,11 +58,18 @@
                                 }
                             }
                         });
-                    } else {
-                        sensorChart.data.labels = labels;
-                        sensorChart.data.datasets = datasets;
-                        sensorChart.update();
-                    }
+
+                        // Display statistics
+                        const stats = sensorInfo.stats;
+                        const statsDiv = document.createElement('div');
+                        statsDiv.innerHTML = `
+                            <strong>${sensorName} Statistics:</strong><br>
+                            Average: ${stats.average.toFixed(2)}<br>
+                            Max: ${stats.max}<br>
+                            Min: ${stats.min}
+                        `;
+                        chartsContainer.appendChild(statsDiv);
+                    });
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
@@ -69,9 +83,9 @@
             return color;
         }
 
-        // Fetch data and update chart every 10 minutes
-        fetchDataAndUpdateChart();
-        setInterval(fetchDataAndUpdateChart, 600000);
+        // Fetch data and update charts every 10 minutes
+        fetchDataAndUpdateCharts();
+        setInterval(fetchDataAndUpdateCharts, 300000);
     </script>
 </body>
 </html>
